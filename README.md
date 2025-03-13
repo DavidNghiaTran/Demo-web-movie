@@ -16,3 +16,10 @@ Dự án này là một trang web xem phim đơn giản, giúp người dùng d�
    Xây dựng một trang web xem phim đơn giản nhưng hiệu quả.
    Học và thực hành các công nghệ web cơ bản.
    Mở rộng thành một ứng dụng thực tế nếu có nhu cầu.
+
+THÀNH VIÊN NHÓM:
+Bùi Phú Thịnh - B22DCVT535
+Phùng Xuân Trường - B22DCVT575
+Đào Thanh Long - B22DCVT313
+Nguyễn Hồng Quân - B22DCVT423
+Trần Trung Nghĩa - B22DCVT391
