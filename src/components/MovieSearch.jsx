@@ -55,7 +55,7 @@ const MovieSearch = ({ data, onLoadMore }) => {
                 <span>{item.release_date?.split("-")[0] || "N/A"}</span>
               </div>
               <p className="text-xs mt-2 line-clamp-2 opacity-80">
-                {item.overview}
+                {item.overview || "Chưa có mô tả"}
               </p>
             </div>
           </div>
