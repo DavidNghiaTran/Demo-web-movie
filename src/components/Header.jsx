@@ -1,13 +1,31 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ onSearch }) => {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/');
+    onSearch('');
+    setSearch('');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(search);
+  };
 
   return (
-    <div className="p-4 flex justify-between  fixed top-0 left-0 w-full z-[9999]  bg-black">
+    <div className="p-4 flex justify-between fixed top-0 left-0 w-full z-[9999] bg-black">
       <div className="flex items-center gap-8">
-        <h1 className="text-[30px] uppercase text-red-700 font-bold">Movie</h1>
+        <div 
+          className="flex items-center cursor-pointer hover:opacity-80 transition-opacity duration-200" 
+          onClick={handleHomeClick}
+        >
+          <span className="text-red-700 text-2xl font-bold">Movie</span>
+        </div>
         <nav className="hidden md:flex items-center space-x-5">
           <a href="#" className="hover:text-red-700">
             Home
@@ -20,21 +38,18 @@ const Header = ({ onSearch }) => {
           </a>
         </nav>
       </div>
-      <div className="flex items-center space-x-5">
-        <input
-          type="text"
-          placeholder="Search"
-          className="border border-gray-300 p-2 text-black"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button
-          className="bg-red-700 text-white px-3 py-1 rounded-lg"
-          onClick={() => onSearch(search)}
-        >
-          Search
-        </button>
-      </div>
+
+      <form onSubmit={handleSubmit} className="w-[500px]">
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full bg-transparent border border-gray-600 rounded-full px-4 py-2 outline-none focus:border-white"
+            placeholder="Search movies..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </form>
     </div>
   );
 };

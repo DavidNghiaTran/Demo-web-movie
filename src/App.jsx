@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Banner from "./components/Banner";
 import Header from "./components/Header";
 import MovieList from "./components/MovieList";
-import { useState } from "react";
 import MovieSearch from "./components/MovieSearch";
+import MovieFilter from "./components/MovieFilter";
 import { MovieProvider } from "./context/MovieDetailContext";
 
 function App() {
@@ -14,6 +14,11 @@ function App() {
   const [searchPage, setSearchPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredMovies, setFilteredMovies] = useState({
+    trending: [],
+    topRated: [],
+    latest: []
+  });
 
   const handleSearch = async (value) => {
     setSearchQuery(value);
@@ -62,6 +67,30 @@ function App() {
     }
   };
 
+  const handleFilter = async ({ genre, country, year }) => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+      },
+    };
+
+    try {
+      const url = `https://api.themoviedb.org/3/discover/movie?language=vi&with_genres=${genre}&with_origin_country=${country}${year !== 'all' ? `&primary_release_year=${year}` : ''}&sort_by=popularity.desc`;
+      const response = await fetch(url, options);
+      const data = await response.json();
+      
+      setFilteredMovies({
+        trending: data.results.slice(0, 10),
+        topRated: data.results.slice(10, 20),
+        latest: data.results.slice(20, 30)
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     (async function () {
       const urls = [
@@ -98,14 +127,36 @@ function App() {
         <div className="h-full bg-black text-white min-h-screen pb-10 relative">
           <Header onSearch={handleSearch} />
           <Banner />
+          
           {searchData.length === 0 && (
-            <MovieList title="Phim Hot" data={trendingMovies.slice(0, 10)} />
+            <MovieFilter onFilterChange={handleFilter} />
           )}
+
           {searchData.length === 0 && (
-            <MovieList title="Phim lẻ mới cập nhật" data={latestMovies.slice(0, 10)} />
+            <MovieList 
+              title="Phim Hot" 
+              data={filteredMovies.trending.length > 0 
+                ? filteredMovies.trending 
+                : trendingMovies.slice(0, 10)} 
+            />
           )}
+          
           {searchData.length === 0 && (
-            <MovieList title="Phim đề cử" data={topRatedMovies.slice(0, 10)} />
+            <MovieList 
+              title="Phim đề cử" 
+              data={filteredMovies.topRated.length > 0 
+                ? filteredMovies.topRated 
+                : topRatedMovies.slice(0, 10)} 
+            />
+          )}
+          
+          {searchData.length === 0 && (
+            <MovieList 
+              title="Phim lẻ mới cập nhật" 
+              data={filteredMovies.latest.length > 0 
+                ? filteredMovies.latest 
+                : latestMovies.slice(0, 10)} 
+            />
           )}
 
           {searchData.length > 0 && (
