@@ -43,7 +43,7 @@ const Header = ({ onSearch }) => {
         <div className="relative">
           <input
             type="text"
-            className="w-full bg-transparent border border-gray-600 rounded-full px-4 py-2 outline-none focus:border-white"
+            className="w-full bg-white text-black border border-gray-600 rounded-full px-4 py-2 outline-none focus:border-white"
             placeholder="Search movies..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}

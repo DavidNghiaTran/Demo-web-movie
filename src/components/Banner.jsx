@@ -1,60 +1,136 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import IconRatingHalf from "../assets/rating-half.png";
 import IconRating from "../assets/rating.png";
 import ImgMovie from "../assets/temp-1.jpeg";
 import IconPlay from "../assets/play-button.png";
 
 const Banner = () => {
-  return (
-    <div className="md:h-[600px] h-[1000px] w-full bg-banner bg-cover bg-center bg-no-repeat relative mt-[75px]">
-      <div className="w-full h-full bg-black/40" />
-      <div className="flex flex-col md:flex-row items-center justify-between absolute md:top-1/2 top-10 -translate-x-1/2 left-1/2 md:-translate-y-1/2 w-full">
-        <div className="md:w-[50%] w-full">
-          <div className="flex flex-col space-y-6 items-start p-10">
-            <p className="bg-gradient-to-r from-red-600 to-red-300 py-2 px-6">
-              TV Show
-            </p>
-            <div className="flex flex-col space-y-4">
-              <h1 className="text-[40px] font-bold text-white">
-                Nghe nói em thích tôi
-              </h1>
-              <div className="flex items-center space-x-3">
-                <img src={IconRating} alt="rating" className="w-8 h-8" />
-                <img src={IconRating} alt="rating" className="w-8 h-8" />
-                <img src={IconRating} alt="rating" className="w-8 h-8" />
-                <img src={IconRating} alt="rating" className="w-8 h-8" />
-                <img src={IconRatingHalf} alt="rating" className="w-8 h-8" />
-              </div>
-              <p className="text-white">
-                Một câu chuyện tình yêu thú vị về một cô gái trẻ với tình yêu đơn phương dành cho người bạn thân. 
-                Khi cô quyết định thổ lộ tình cảm của mình, những tình huống hài hước và cảm động xảy ra, 
-                dẫn dắt người xem qua những khoảnh khắc đáng nhớ trong hành trình tìm kiếm tình yêu đích thực.
-              </p>
-            </div>
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-            <div className="flex items-center space-x-5">
-              <button className="py-2 px-3 bg-black text-white border border-black font-bold">
-                Chi tiết
-              </button>
-              <button className="py-2 px-3 bg-red-600 text-white font-bold">
-                Xem Phim
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="md:w-[50%] w-full flex items-center justify-center">
-          <div className="w-[300px] h-[400px] relative group">
-            <button className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out">
-              <img src={IconPlay} alt="play" className="w-16 h-16" />
+  const fetchRandomMovie = async () => {
+    try {
+      const url = "https://api.themoviedb.org/3/trending/movie/day?language=vi";
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+        },
+      };
+
+      const response = await fetch(url, options);
+      const data = await response.json();
+      
+      // Chọn ngẫu nhiên một phim từ danh sách
+      const randomIndex = Math.floor(Math.random() * data.results.length);
+      setMovie(data.results[randomIndex]);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRandomMovie();
+
+    // Thay đổi phim mỗi 1 phút (60000ms)
+    const interval = setInterval(() => {
+      fetchRandomMovie();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleWatchNow = () => {
+    setShowModal(true);
+  };
+
+  if (loading || !movie) return null;
+
+  return (
+    <>
+      <div className="h-[500px] w-full relative mb-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent z-10" />
+        <img
+          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+          alt={movie.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+          <h1 className="text-4xl font-bold mb-4">{movie.title}</h1>
+          <p className="text-lg max-w-2xl line-clamp-3 mb-6">{movie.overview}</p>
+          <div className="flex items-center gap-6">
+            <button
+              onClick={handleWatchNow}
+              className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-full flex items-center gap-2 transition-colors"
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              Xem ngay
             </button>
-            <img
-              src={ImgMovie}
-              alt="banner"
-              className="object-cover w-full h-full"
-            />
+            <div className="flex items-center gap-4">
+              <span className="bg-black/50 px-3 py-1 rounded">
+                {new Date(movie.release_date).getFullYear()}
+              </span>
+              <span className="bg-black/50 px-3 py-1 rounded">
+                {movie.vote_average.toFixed(1)} ⭐
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {showModal && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+          onClick={() => setShowModal(false)}
+        >
+          <button 
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-4 right-4 text-white hover:text-red-700 transition-colors duration-200 z-[60]"
+          >
+            <svg 
+              className="w-10 h-10" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M6 18L18 6M6 6l12 12" 
+              />
+            </svg>
+          </button>
+
+          <div 
+            className="relative w-full max-w-5xl aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={`https://www.2embed.cc/embed/${movie.id}`}
+              className="w-full h-full"
+              frameBorder="0"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              title={movie.title}
+            ></iframe>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
