@@ -54,15 +54,15 @@ const Banner = () => {
 
   return (
     <>
-      <div className="h-[500px] w-full relative mb-10">
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent z-10" />
+      <div className="h-[600px] w-full relative mb-10 mt-16">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent z-10" />
         <img
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
           alt={movie.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
         />
-        <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+        <div className="absolute bottom-10 left-0 right-0 p-6 z-20">
           <h1 className="text-4xl font-bold mb-4">{movie.title}</h1>
           <p className="text-lg max-w-2xl line-clamp-3 mb-6">{movie.overview}</p>
           <div className="flex items-center gap-6">
