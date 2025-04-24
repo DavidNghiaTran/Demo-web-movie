@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { Movie } from '../models/Movie';
 import IconRatingHalf from "../assets/rating-half.png";
 import IconRating from "../assets/rating.png";
 import ImgMovie from "../assets/temp-1.jpeg";
@@ -25,9 +26,9 @@ const Banner = () => {
       const response = await fetch(url, options);
       const data = await response.json();
       
-      // Chọn ngẫu nhiên một phim từ danh sách
+      // Chọn ngẫu nhiên một phim từ danh sách và tạo đối tượng Movie
       const randomIndex = Math.floor(Math.random() * data.results.length);
-      setMovie(data.results[randomIndex]);
+      setMovie(new Movie(data.results[randomIndex]));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -58,7 +59,7 @@ const Banner = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent z-10" />
         <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+          src={movie.backdropPath}
           alt={movie.title}
           className="w-full h-full object-cover object-center"
         />
@@ -81,10 +82,10 @@ const Banner = () => {
             </button>
             <div className="flex items-center gap-4">
               <span className="bg-black/50 px-3 py-1 rounded">
-                {new Date(movie.release_date).getFullYear()}
+                {new Date(movie.releaseDate).getFullYear()}
               </span>
               <span className="bg-black/50 px-3 py-1 rounded">
-                {movie.vote_average.toFixed(1)} ⭐
+                {movie.voteAverage.toFixed(1)} ⭐
               </span>
             </div>
           </div>

@@ -101,7 +101,7 @@ const MovieList = ({ title, data }) => {
             >
               <div className="relative w-[200px] h-[300px] overflow-hidden rounded-lg">
                 <img
-                  src={`${import.meta.env.VITE_IMG_URL}${movie.poster_path}`}
+                  src={movie.posterPath}
                   alt={movie.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />

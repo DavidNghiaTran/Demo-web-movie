@@ -36,7 +36,7 @@ const MovieSearch = ({ data, onLoadMore }) => {
           >
             <div className="relative w-full aspect-[2/3] overflow-hidden rounded-lg">
               <img
-                src={`${import.meta.env.VITE_IMG_URL}${item.poster_path}`}
+                src={item.posterPath}
                 alt={item.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
